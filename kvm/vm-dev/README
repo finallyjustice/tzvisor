@@ -1,0 +1,8 @@
+The driver in Linux VM.
+
+CROSS_COMPILE=arm-linux-gnueabihf- ARCH=arm make
+
+To test, run :
+sudo mknod /dev/tzvisor c 50 0
+ 
+user.c is used to interact with /dev/tzvisor
