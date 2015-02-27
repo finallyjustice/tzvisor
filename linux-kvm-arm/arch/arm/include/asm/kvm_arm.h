@@ -66,9 +66,17 @@
  * FMO:		Override CPSR.F and enable signaling with VF
  * SWIO:	Turn set/way invalidates into set/way clean+invalidate
  */
-#define HCR_GUEST_MASK (HCR_TSC | HCR_TSW | HCR_TWI | HCR_VM | HCR_BSU_IS | \
+//#define HCR_GUEST_MASK (HCR_TSC | HCR_TSW | HCR_TWI | HCR_VM | HCR_BSU_IS | \
+//			HCR_FB | HCR_TAC | HCR_AMO | HCR_IMO | HCR_FMO | \
+//			HCR_TWE | HCR_SWIO | HCR_TIDCP)
+
+// Dongli-Begin
+// Change flag to not trap SMC instruction
+#define HCR_GUEST_MASK (HCR_TSW | HCR_TWI | HCR_VM | HCR_BSU_IS | \
 			HCR_FB | HCR_TAC | HCR_AMO | HCR_IMO | HCR_FMO | \
 			HCR_TWE | HCR_SWIO | HCR_TIDCP)
+// Dongli-End
+
 #define HCR_VIRT_EXCP_MASK (HCR_VA | HCR_VI | HCR_VF)
 
 /* System Control Register (SCTLR) bits */

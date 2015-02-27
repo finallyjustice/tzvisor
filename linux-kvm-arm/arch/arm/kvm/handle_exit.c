@@ -36,15 +36,37 @@ static int handle_svc_hyp(struct kvm_vcpu *vcpu, struct kvm_run *run)
 	return -EINVAL; /* Squash warning */
 }
 
+// Dongli-Begin
+unsigned int tzvisor_hypercall_addr = 0x0;
+EXPORT_SYMBOL_GPL(tzvisor_hypercall_addr);
+void (*hvc_handler_func)(void);
+// Dongli-End
+
+// This function is changed by Dongli to handle HVC call
 static int handle_hvc(struct kvm_vcpu *vcpu, struct kvm_run *run)
 {
+	// Dongli-Begin
+	printk(KERN_ALERT "[VMM] start the hvc call: 0x%08x\n", tzvisor_hypercall_addr);
+
+	if(tzvisor_hypercall_addr == 0x0)
+	{
+		printk(KERN_ALERT "[VMM] please load KVM-DEV module\n");
+	}
+	else
+	{
+		hvc_handler_func = tzvisor_hypercall_addr;
+		hvc_handler_func();
+	}
+	// Dongli-End
+
 	trace_kvm_hvc(*vcpu_pc(vcpu), *vcpu_reg(vcpu, 0),
 		      kvm_vcpu_hvc_get_imm(vcpu));
 
 	if (kvm_psci_call(vcpu))
 		return 1;
 
-	kvm_inject_undefined(vcpu);
+	// Commented by Dongli
+	//kvm_inject_undefined(vcpu);
 	return 1;
 }
 
