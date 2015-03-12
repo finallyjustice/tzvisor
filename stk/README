@@ -1,7 +1,0 @@
-This is a bare metal code sample on Fast Models 9.1 with Cortex A15x1 to test the MMU (kernel paging).
-
-To run Fast Models with the program, run:
-make
-sh run.sh
-
-For any question, please contact Dongli Zhang (dongli.zhang0129@gmail.com)
