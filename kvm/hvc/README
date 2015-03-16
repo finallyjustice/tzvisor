@@ -1,0 +1,3 @@
+A test module for hvc in KVM/ARM.
+
+CROSS_COMPILE=arm-linux-gnueabihf- ARCH=arm make

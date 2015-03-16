@@ -23,6 +23,8 @@ extern uint8_t kernel_cmd, kernel_cmd_end;
 
 struct loader_info loader;
 
+unsigned long hpa;
+
 #ifdef MACH_MPS
 #define PLAT_ID 10000 /* MPS (temporary) */
 #elif defined (VEXPRESS)

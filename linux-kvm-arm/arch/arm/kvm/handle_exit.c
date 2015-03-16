@@ -39,7 +39,7 @@ static int handle_svc_hyp(struct kvm_vcpu *vcpu, struct kvm_run *run)
 // Dongli-Begin
 unsigned int tzvisor_hypercall_addr = 0x0;
 EXPORT_SYMBOL_GPL(tzvisor_hypercall_addr);
-void (*hvc_handler_func)(void);
+void (*hvc_handler_func)(struct kvm_vcpu *, struct kvm *);
 // Dongli-End
 
 // This function is changed by Dongli to handle HVC call
@@ -55,7 +55,7 @@ static int handle_hvc(struct kvm_vcpu *vcpu, struct kvm_run *run)
 	else
 	{
 		hvc_handler_func = tzvisor_hypercall_addr;
-		hvc_handler_func();
+		hvc_handler_func(vcpu, vcpu->kvm);
 	}
 	// Dongli-End
 

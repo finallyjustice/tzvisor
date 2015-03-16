@@ -1,4 +1,4 @@
 motherboard.smsc_91c111.enabled=1
 motherboard.hostbridge.userNetworking=1
-cluster.cpu0.semihosting-cmd_line="--kernel /home/zhang/kvm/tzvisor/linux-kvm-arm/arch/arm/boot/uImage --dtb /home/zhang/kvm/host-a15.dtb -- earlyprintk console=ttyAMA0 mem=2048M root=/dev/mmcblk0 rw ip=dhcp"
+cluster.cpu0.semihosting-cmd_line="--kernel /home/zhang/kvm/tzvisor/linux-kvm-arm/arch/arm/boot/uImage --dtb /home/zhang/kvm/host-a15.dtb -- earlyprintk console=ttyAMA0 mem=1692M root=/dev/mmcblk0 rw ip=dhcp"
 motherboard.mmc.p_mmc_file="/home/zhang/kvm/disk.img"
