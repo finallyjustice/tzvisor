@@ -1,30 +1,48 @@
 #include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
 #include <fcntl.h>
 #include <string.h>
+#include <sys/types.h>
 #include <sys/stat.h>
-#include <sched.h>
+
+#include "ioctl-io.h"
 
 int main(int argc, char **argv)
 {
-	int fp;
-	fp = open("/dev/temp", O_RDWR, S_IRUSR);
-	if(fp < 0)
+	int fd_sec = 0;
+	char *path = "/root/tzfile";
+	char *buf = malloc(2048);
+
+	fd_sec = open(path, O_RDONLY);
+	if(fd_sec < 0)
 	{
-		printf("Failed to open device /dev/temp!\n");
+		printf("Failed to open the file!\n");
 		return -1;
 	}
 
-	char buf[1024];
+	int len = read(fd_sec, buf, 2048);
+	close(fd_sec);
 
-	while(1)
+	int fd = 0;
+
+	fd = open("/dev/tzvisor-vm", O_RDWR);
+	if(fd < 0)
 	{
-		read(fp, buf, 0);
-		//sched_yield();
-		//sleep(1);
-		//usleep(100);
+		printf("Failed to open the device\n");
+		return -1;
 	}
 
-	close(fp);
+	struct tzv_file_info tfi;
+	tfi.len = len; 
+	tfi.bin = buf;
+	if(ioctl(fd, TZV_IOREG, &tfi) < 0)
+	{
+		printf("Failed to use ioctl\n");
+		return -1;
+	}
+
+	close(fd);
 
 	return 0;
 }

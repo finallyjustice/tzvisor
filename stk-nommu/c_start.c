@@ -183,7 +183,7 @@ void secure_world(void)
 
 		char *data1 = (char *)hpa_global;
 		char *data2 = (char *)gpa_to_hpa(gpa_global, vttbr_low_global);
-		cprintf("[TZV] data: 0x%s, 0x%s\n", data1, data2);
+		cprintf("[TZV] data: %s, %s\n", data1, data2);
 		asm volatile(
 			".arch_extension sec\n\t"
 			"smc #0\n\t");
