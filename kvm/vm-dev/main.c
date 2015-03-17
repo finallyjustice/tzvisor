@@ -52,6 +52,7 @@ long vm_dev_ioctl(struct file *filp, unsigned int ioctl, unsigned long arg)
 			struct tzv_file_info *tzv =  (struct tzv_file_info *)argp;
 			int len = tzv->len;
 			char *bin = kmalloc(4096, GFP_KERNEL);
+			memset(bin, 0, 4096);
 			copy_from_user(bin, tzv->bin, len);
 			printk(KERN_ALERT "[vm-dev] bin: %s\n", bin);
 

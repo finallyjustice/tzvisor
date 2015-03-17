@@ -33,6 +33,8 @@ int main(int argc, char **argv)
 		return -1;
 	}
 
+	printf("user data: %s\n", buf);
+
 	struct tzv_file_info tfi;
 	tfi.len = len; 
 	tfi.bin = buf;
@@ -41,7 +43,8 @@ int main(int argc, char **argv)
 		printf("Failed to use ioctl\n");
 		return -1;
 	}
-
+	
+	free(buf);
 	close(fd);
 
 	return 0;
