@@ -3,8 +3,10 @@ The source code has been modified.
 
 boot-wrapper: Start Linux kernels under ARM Fast Models
 
-The boot-wrapper is a fairly simple implementation of a boot loader
-intended to run under an ARM Fast Model and boot Linux.
+The boot-wrapper is a fairly simple implementation of a boot loader intended to
+run under an ARM Fast Model and boot Linux. It is extended as a Secure Tiny
+Kernel (STK) in TrustZone secure world on Fast Models 9.1 to provide Trusted
+Execution Environment in KVM based IaaS cloud. 
 
 License
 =======
