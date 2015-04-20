@@ -248,9 +248,7 @@ void *kmalloc (int order)
         cprintf("kmalloc: order out of range\n");
     }
 
-    //acquire(&kmem.lock);
     up = _kmalloc(order);
-    //release(&kmem.lock);
 
     return up;
 }
@@ -286,9 +284,7 @@ void kfree (void *mem, int order)
         cprintf("kfree: order out of range or memory unaligned\n");
     }
 
-    //acquire(&kmem.lock);
     _kfree(mem, order);
-    //release(&kmem.lock);
 }
 
 // free a page
@@ -330,5 +326,4 @@ int get_order (uint32 v)
     }
     
     return ord;
-
 }

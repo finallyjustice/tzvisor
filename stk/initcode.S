@@ -1,4 +1,5 @@
-# Initial process execs /init.
+# A test program for STK user mode
+# It is linked into the STK kernel space
 
 #include "syscall.h"
 

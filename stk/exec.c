@@ -10,19 +10,17 @@
 // load a user program for execution
 int exec (char *base)
 {
-    struct elfhdr elf;
-    struct proghdr ph;
+    struct elfhdr elf;  // elf file header
+    struct proghdr ph;  // elf program header
     
-	pde_t *pgdir;
-    pde_t *oldpgdir;
-    
+	pde_t *pgdir; 
 	char *s;
     char *last;
     int i;
     int off;
     
 	uint argc;
-    uint sz;
+    uint sz;    // allocated memory virtual address space util now
     uint sp;
     uint ustack[3 + MAXARG + 1];
 
@@ -91,13 +89,12 @@ int exec (char *base)
 
 	p->state = RUNNABLE;	
 
-	oldpgdir = p->pgdir;
     p->pgdir = pgdir;
     p->sz = sz;
     p->tf->pc = elf.entry;
     p->tf->sp_usr = sp;
 
-	cprintf("prepare....\n");
+	cprintf("[TZV] prepare....\n");
 	
 	switchuvm(p);
 
@@ -105,20 +102,8 @@ int exec (char *base)
 	swtch(&cpu->scheduler, proc->context);	
 
 	cprintf("[TZV] job is finished\n");
+	// continue the execution of secure world function
 	sec_cont();
-	///scheduler();
-	//while(1);
 
-    /////switchuvm(proc);
-    /////freevm(oldpgdir);
     return 0;
-
-    /*bad: if (pgdir) {
-        freevm(pgdir);
-    }
-
-    if (ip) {
-        iunlockput(ip);
-    }
-    return -1;*/
 }

@@ -7,21 +7,21 @@
 
 #include "semi_loader.h"
 
+// end of stk in memory (model.lds.S)
 extern void* end;
 
+// we assume only one CPU at this time
 struct cpu  cpus[NCPU];
 struct cpu  *cpu;
 
 char *param_base;
 
-//extern unsigned int hpa_global;        // from smc call r0
-//extern unsigned int gpa_global;        // from smc call r1
-//extern unsigned int vttbr_low_global;  // from smc call r3
-//extern unsigned int vttbr_low_reg;     // read with instruction
+extern unsigned int smc_command;  // command for smc call - r0
+extern unsigned int smc_param;    // first param for smc call - r1
 
-extern unsigned int smc_command;
-extern unsigned int smc_param;
-
+/* The code to translate virt addr to phys addr
+   is currently not used 
+*/
 #define PGDIR_SHIFT    30
 #define PMD_SHIFT      21
 #define PTRS_PER_PMD   512
@@ -58,6 +58,7 @@ static inline unsigned long *pte_offset_kernel(unsigned long *pmd, unsigned long
 	return (unsigned long *)pmd_page_vaddr(*pmd) + pte_index(addr)*2;
 }
 
+// convert a guest physical address in VM to host physical address in KVM
 unsigned long gpa_to_hpa(unsigned long gpa, unsigned long vttbr)
 {
 	unsigned long *pgd;
@@ -73,6 +74,7 @@ unsigned long gpa_to_hpa(unsigned long gpa, unsigned long vttbr)
 	return (*pte & PAGE_MASK) | (gpa & ADDR_MASK);
 }
 
+// register a pal file at address addr
 void exec_pal(unsigned int addr)
 {
 	exec((char *)addr);
@@ -81,14 +83,6 @@ void exec_pal(unsigned int addr)
 void sec_func(void)
 {
 	cprintf("[TZV] This is secure world\n");
-
-	//cprintf("[TZV] hpa_global:       0x%x\n", hpa_global);
-	//cprintf("[TZV] gpa_global:       0x%x\n", gpa_global);
-	//cprintf("[TZV] vttbr_low_global: 0x%x\n", vttbr_low_global);
-	//cprintf("[TZV] vttbr_low_reg:    0x%x\n", vttbr_low_reg);
-
-	cprintf("[TZV] smc_command: 0x%x\n", smc_command);
-	cprintf("[TZV] smc_param  : 0x%x\n", smc_param);
 
 	char *param_base = (char *)smc_param; 
 	exec_pal(param_base);
@@ -105,16 +99,18 @@ void kmain(void)
 	// we currently only support 1 cpu core
 	cpu = &cpus[0];
 
+	// init memory management in STK
 	init_vmm ();
 	kpt_freerange (align_up(&end, PT_SZ), INIT_KERNMAP);
+	// init buddy algorithm
 	kmem_init2((void *)INIT_KERNMAP, (void *)PHYSTOP);	
 
+	// init vector table (page fault, system call, irq, etc)
 	trap_init();
-
-	//userinit();
-	//scheduler();
 
 	cprintf("[TZV] Booting Linux now...\n");
 	boot_linux();
+
+	// kernel will never return here
 	panic("[TZV] We should never come here!");	
 }

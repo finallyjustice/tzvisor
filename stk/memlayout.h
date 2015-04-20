@@ -8,7 +8,6 @@
 						// P:0x80000000  (PHY_START) => V:0xc0000000
 // HCLIN added for RAM's PA starts from non-zero 
 // use this cmd to check and add PHY_START : grep P2V * -R
-//#define PHY_START		0x80000000
 #define PHY_START		0xf0000000
 
 // #define EXTMEM	  		0x20000

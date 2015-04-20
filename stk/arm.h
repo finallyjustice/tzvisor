@@ -1,9 +1,6 @@
 #ifndef ARM_INCLUDE
 #define ARM_INCLUDE
 
-//#include "versatile_pb.h"
-//#include "types.h"
-
 // trap frame: in ARM, there are seven modes. Among the 16 regular registers,
 // r13 (sp), r14(lr), r15(pc) are banked in all modes.
 // 1. In xv6_a, all kernel level activities (e.g., Syscall and IRQ) happens

@@ -137,8 +137,6 @@ void userinit(void)
 	cprintf("p->tf should be 0x%x\n", p->tf);
 
     safestrcpy(p->name, "initcode", sizeof(p->name));
-    ///////////////p->cwd = namei("/");
-
     p->state = RUNNABLE;
 }
 
@@ -185,8 +183,6 @@ void scheduler(void)
         sti();
 
         // Loop over process table looking for process to run.
-        //acquire(&ptable.lock);
-
         for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
             if(p->state != RUNNABLE) {
                 continue;
@@ -206,8 +202,6 @@ void scheduler(void)
             // It should have changed its p->state before coming back.
             proc = 0;
         }
-
-        //release(&ptable.lock);
     }
 }
 
@@ -217,15 +211,8 @@ void forkret(void)
 {
 	static int first = 1;
 
-	// Still holding ptable.lock from scheduler.
-	//release(&ptable.lock);
-
 	if (first) {
-		// Some initialization functions must be run in the context
-		// of a regular process (e.g., they call sleep), and thus cannot
-		// be run from main().
 		first = 0;
-		//initlog();
 	}
 
 	// Return to "caller", actually trapret (see allocproc).

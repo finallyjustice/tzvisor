@@ -12,25 +12,25 @@ void swi_handler (struct trapframe *r)
 {
     proc->tf = r;
     syscall ();
-	//cprintf("[TZV] This is swi_handler!: %d, %d\n", proc->tf->r0, proc->tf->r1);
 }
 
 // trap routine
 void irq_handler (struct trapframe *r)
 {
+   cprintf("irq handler is not implemented\n");
+   // proc points to the current process. If the kernel is
+   // running scheduler, proc is NULL.
+   /*if (proc != NULL) {
+		proc->tf = r;
+	}
     
-    // proc points to the current process. If the kernel is
-    // running scheduler, proc is NULL.
-    /*if (proc != NULL) {
-        proc->tf = r;
-    }
-
-    pic_dispatch (r);*/
+	pic_dispatch (r);*/
 }
 
 // trap routine
 void reset_handler (struct trapframe *r)
 {
+   cprintf("reset handler is not implemented\n");
     /*cli();
     cprintf ("reset at: 0x%x \n", r->pc);*/
 }
@@ -45,6 +45,7 @@ void und_handler (struct trapframe *r)
 // trap routine
 void dabort_handler (struct trapframe *r)
 {
+   cprintf("dabort handler is not implemented\n");
     /*uint dfs, fa;
     extern void show_callstk (char *s);
     cli();
@@ -65,6 +66,7 @@ void dabort_handler (struct trapframe *r)
 // trap routine
 void iabort_handler (struct trapframe *r)
 {
+   cprintf("iaabort handler is not implemented\n");
     /*uint ifs;
     
     // read fault status register
@@ -78,6 +80,7 @@ void iabort_handler (struct trapframe *r)
 // trap routine
 void na_handler (struct trapframe *r)
 {
+   cprintf("na handler is not implemented\n");
     /*cli();
     cprintf ("n/a at: 0x%x \n", r->pc);*/
 }
@@ -85,6 +88,7 @@ void na_handler (struct trapframe *r)
 // trap routine
 void fiq_handler (struct trapframe *r)
 {
+   cprintf("fiq handler is not implemented\n");
     /*cli();
     cprintf ("fiq at: 0x%x \n", r->pc);*/
 }
