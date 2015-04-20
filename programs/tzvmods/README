@@ -1,0 +1,9 @@
+The driver in Linux VM and KVM/ARM.
+
+Run sh compile.sh to compile the code.
+
+Put ./user, ./vm-dev.ko and mount.sh in VM.
+
+Put ./kvm-dev.ko in KVM.
+
+user.c is used to interact with /dev/tzvisor
