@@ -51,12 +51,17 @@ start:
 	@
 
 	@ Set all interrupts to be non-secure
+	@ Cortex-A15 TRM 8.3. base of GIC is specified bu PERIPHBASE[39:15]
+	@ Distributor is at 0x1000. Interface is at 0x2000
 	ldr	r0, =0x2c001000			@ Dist GIC base
+	@ obtain number of interrupts supported
 	ldr	r1, [r0, #0x04]			@ Type Register
 	cmp	r4, #0
 	andeq	r1, r1, #0x1f
 	movne	r1, #0
 	add	r2, r0, #0x080			@ Security Register 0
+	@ load 0xffffffff to r3. ARM Generic Interrupt Controller Architecture Spec 4.3.4
+	@ all interrupts are non-secure
 	mvn	r3, #0
 2:	str	r3, [r2]
 	sub	r1, r1, #1
@@ -65,6 +70,8 @@ start:
 	bne	2b
 
 	@ Set GIC priority mask bit [7] = 1
+	@ Provides an interrupt priority filter. Only interrupts with higher priority than the
+	@ value in this register can be signalled to the processor.
 	ldr	r0, =0x2c002000			@ CPU GIC base
 	mov	r1, #0x80
 	str	r1, [r0, #0x4]			@ GIC ICCPMR
