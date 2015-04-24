@@ -19,7 +19,7 @@ BOOTLOADER	= entry.S
 OBJS 		= entry.o start.o semihosting.o string.o semi_loader.o $(LIBFDTOBJS) \
 			  main.o uart.o raise.o asm.o \
 			  vm.o buddy.o proc.o switch.o exec.o\
-			  trap_asm.o trap.o console.o arm.o syscall.o\
+			  trap_asm.o trap.o console.o arm.o syscall.o timer.o \
 			  lib/string.o
 KERNEL		= uImage
 

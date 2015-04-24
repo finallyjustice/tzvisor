@@ -107,8 +107,14 @@ void kmain(void)
 
 	// init vector table (page fault, system call, irq, etc)
 	trap_init();
+	set_timer_secure();
+	gic_init(P2V_DEV(VIC_BASE));
+	// we use TIMER1 instead of TIMER0
+	timer_init(100);
+	sti();
 
 	cprintf("[TZV] Booting Linux now...\n");
+	while(1);
 	boot_linux();
 
 	// kernel will never return here

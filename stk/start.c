@@ -151,7 +151,8 @@ void secure_world(void)
 {
 	while(1)
 	{
-		sec_func();
+		//sec_func();
+		cprintf("[TZV] TMP TEST\n");
 		asm volatile(
 			".arch_extension sec\n\t"
 			".global sec_cont\n\t"
