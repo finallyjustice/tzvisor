@@ -20,16 +20,20 @@ void gic_eoi(int intn)
 	GICC_REG(GICC_EOIR) = spi2id(intn);
 }
 
-void timer_irq_handler()
+int test_once;
+
+void timer1_irq_handler()
 {
 	int intid, intn;
-	volatile uint * timer0 = (uint *)TIMER0;
+	volatile uint * timer1 = P2V_DEV(TIMER1);
 	intid = gic_getack(); /* iack */
 	intn = intid - 32;
-	cprintf("IRQ Number : %d\n", intn);
-	timer0[TIMER_INTCLR] = 1;
+	cprintf("%d IRQ TIMER1 Number : 0x%x\n", test_once, intn);
+	timer1[TIMER_INTCLR] = 1;
 	gic_eoi(intn);
-	sti();
+	//sti();
+
+	test_once++;
 }
 
 static void gicd_set_bit(int base, int id, int bval) 
@@ -105,33 +109,50 @@ void gic_init(uint* base)
 	/* Provides an intrerupt priority filter. Only interrupts with higher
 	 *priority than the value in this register are signaled to the processor.
 	 */
-	GICC_REG(GICC_PMR) = 0x80;
+	//GICC_REG(GICC_PMR) = 0x80;
 
 	gic_configure(SPI_TYPE, PIC_TIMER01);
+	gic_configure(SPI_TYPE, PIC_TIMER23);
 	gic_enable();
 }
 
-void timer_init(int hz)
-{   
-	volatile uint * timer0 = P2V_DEV(TIMER0);
+void timer1_enable(void)
+{
+	volatile uint * timer1 = P2V_DEV(TIMER1);
+	timer1[TIMER_CONTROL] = TIMER_EN|TIMER_PERIODIC|TIMER_32BIT|TIMER_INTEN;
+}
 
-	timer0[TIMER_LOAD] = CLK_HZ / hz;
-	timer0[TIMER_CONTROL] = TIMER_EN|TIMER_PERIODIC|TIMER_32BIT|TIMER_INTEN;
+void timer1_disable(void)
+{
+	volatile uint * timer1 = P2V_DEV(TIMER1);
+	timer1[TIMER_CONTROL] = TIMER_EN|TIMER_PERIODIC|TIMER_32BIT;
+}
+
+void timer1_init(int hz)
+{   
+	volatile uint * timer1 = P2V_DEV(TIMER1);
+
+	timer1[TIMER_LOAD] = CLK_HZ / hz;
+	//timer1[TIMER_CONTROL] = TIMER_EN|TIMER_PERIODIC|TIMER_32BIT|TIMER_INTEN;
 }
 
 #define GIC_DIST_BASE 0x2c001000
 #define GIC_DIST_SEC  0x80
 
-void set_timer_secure()
+void set_timer1_secure()
 {
 	uint *base = P2V_DEV(GIC_DIST_BASE+GIC_DIST_SEC);
-	base = base + 1;  // timer irq number is 34, on the second secure register
-	*base = 0;
+	base = base + 1;  
+	// timer0 irq number is 34, on the second secure register
+	// timer1 irq number is 35, on the second secure register
+	*base = 0xfffffff7;
 }
 
-void set_timer_normal()
+void set_timer1_normal()
 {
 	uint *base = P2V_DEV(GIC_DIST_BASE+GIC_DIST_SEC);
-	base = base + 1;  // timer irq number is 34, on the second secure register
+	base = base + 1;
+	// timer0 irq number is 34, on the second secure register
+	// timer1 irq number is 35, on the second secure register
 	*base = 0xffffffff;
 }

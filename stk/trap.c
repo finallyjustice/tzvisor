@@ -20,7 +20,7 @@ void irq_handler (struct trapframe *r)
    //cprintf("irq handler is not implemented\n");
    //while(1);
 
-	timer_irq_handler();
+	timer1_irq_handler();
 
    // proc points to the current process. If the kernel is
    // running scheduler, proc is NULL.

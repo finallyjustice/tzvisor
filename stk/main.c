@@ -82,10 +82,36 @@ void exec_pal(unsigned int addr)
 
 void sec_func(void)
 {
+	extern int test_once;
+	//int dodo = 0;
+	test_once = 0;
 	cprintf("[TZV] This is secure world\n");
+	volatile uint * timer1 = P2V_DEV(TIMER1);
+	timer1[TIMER_CONTROL] = TIMER_EN|TIMER_PERIODIC|TIMER_32BIT|TIMER_INTEN;
+	//set_timer1_secure();
+	unsigned int *iccicr_base = (unsigned int *)P2V_DEV(0x2c002000);
+	unsigned int orin = *iccicr_base;
+	*iccicr_base &= 0x1;
+	sti();
 
-	char *param_base = (char *)smc_param; 
-	exec_pal(param_base);
+	cprintf("[TZV] In timer\n");
+	while(1)
+	{
+		//dodo++;
+		sti();
+		if(test_once > 5)
+			break;
+	}
+	//cprintf("%d\n", dodo);
+
+	cli();
+	*iccicr_base = orin;
+	timer1[TIMER_CONTROL] = TIMER_EN|TIMER_PERIODIC|TIMER_32BIT;
+	
+
+	//while(1);
+	//char *param_base = (char *)smc_param; 
+	//exec_pal(param_base);
 	
 	/* backup */
 	//userinit();
@@ -107,14 +133,17 @@ void kmain(void)
 
 	// init vector table (page fault, system call, irq, etc)
 	trap_init();
-	set_timer_secure();
+	set_timer1_secure();
 	gic_init(P2V_DEV(VIC_BASE));
 	// we use TIMER1 instead of TIMER0
-	timer_init(100);
-	sti();
+	timer1_init(100);
+	//sti();
+
+	unsigned int *iccicr_base = (unsigned int *)P2V_DEV(0x2c002000);
+	*iccicr_base &= 0x1;
 
 	cprintf("[TZV] Booting Linux now...\n");
-	while(1);
+	//while(1);
 	boot_linux();
 
 	// kernel will never return here
