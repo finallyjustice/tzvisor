@@ -5,4 +5,5 @@ OBJDUMP=${CROSS_COMPILE}objdump
 PAL=$1
 
 $OBJDUMP -t ${PAL} | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$$/d' > ${PAL}.sym
-./utility ${PAL}.sym ${PAL}.conf ${PAL}
+cp pal pal.pal
+./utility ${PAL}.sym ${PAL}.conf ${PAL}.pal

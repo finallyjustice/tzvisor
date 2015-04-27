@@ -19,15 +19,15 @@ int main(int argc, char **argv)
 	
 	unsigned int tmp_addr;
 	string tmp_func;
-	int c;
+	int tot;
 
 	ifstream fconf(argv[2]);  // configuration file	
-	c = 0;
+	tot = 0;
 	while(fconf >> tmp_func)
 	{
 		vf.push_back(tmp_func);
 		va.push_back(0xffffffff);
-		c++;
+		tot++;
 	}
 	fconf.close();
 
@@ -36,7 +36,7 @@ int main(int argc, char **argv)
 	while(fsym >> std::hex >> tmp_addr)
 	{
 		fsym >> tmp_func;
-		for(int i=0; i<c; i++)
+		for(int i=0; i<tot; i++)
 		{
 			if(vf[i].compare(tmp_func) == 0)
 			{
@@ -57,11 +57,13 @@ int main(int argc, char **argv)
 		return 1;
 	}
 
-	for(idx=0; idx<c; idx++)
+	for(idx=0; idx<tot; idx++)
 	{
 		unsigned int tmp = va[idx];
 		fwrite(&tmp, sizeof(unsigned int), 1, fp);
 	}
+
+	fwrite(&tot, sizeof(int), 1, fp);
 
 	fclose(fp);
 
