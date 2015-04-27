@@ -83,7 +83,6 @@ void exec_pal(unsigned int addr)
 void sec_func(void)
 {
 	extern int test_once;
-	//int dodo = 0;
 	test_once = 0;
 	cprintf("[TZV] This is secure world\n");
 	volatile uint * timer1 = P2V_DEV(TIMER1);
@@ -97,12 +96,10 @@ void sec_func(void)
 	cprintf("[TZV] In timer\n");
 	while(1)
 	{
-		//dodo++;
 		sti();
 		if(test_once > 5)
 			break;
 	}
-	//cprintf("%d\n", dodo);
 
 	cli();
 	*iccicr_base = orin;
